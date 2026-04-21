@@ -1,0 +1,49 @@
+[SIZE=5][B]Sami's Potion Helper[/B][/SIZE]
+
+An Elder Scrolls Online addon that automatically manages consumables in your backpack. When you open your inventory, it scans your bag and marks non-crafted, sellable items as junk based on your enabled filters (potions always, with optional food/drink, poisons, and merchant items). It can also auto-sell junk when you open a store.
+
+[SIZE=4][B]Features[/B][/SIZE]
+
+[LIST]
+[*][B]Auto-junk non-crafted potions[/B] — Any sellable potion that was not player-crafted is automatically marked as junk when you open your inventory.
+[*][B]Optional food & drink filtering[/B] — When enabled, non-crafted sellable food and drink are also marked as junk.
+[*][B]Optional poison filtering[/B] — When enabled, non-crafted sellable poisons are also marked as junk.
+[*][B]Optional merchant item filtering[/B] — When enabled, non-crafted sellable merchant trash/priority-sell items are also marked as junk.
+[*][B]Optional auto-sell at merchants[/B] — When enabled, all junk is sold automatically when opening a store.
+[*][B]Settings panel[/B] — Configurable via LibAddonMenu-2.0, including debug, filter, and auto-sell toggles.
+[*][B]Optional stolen item junking[/B] — When enabled, stolen items can be marked as junk; disable to always keep stolen items out of junk.
+[/LIST]
+
+[COLOR="Yellow"][SIZE=4][B]Dependencies[/B][/SIZE][/COLOR]
+
+[LIST]
+[*][URL=https://www.esoui.com/downloads/info7-LibAddonMenu.html]LibAddonMenu-2.0[/URL] ≥ 41
+[/LIST]
+
+[SIZE=4][B]Settings[/B][/SIZE]
+
+Open [B]Settings → Addons → SamisPotionHelper[/B] to access:
+
+[LIST]
+[*][B]Enable Debug[/B] (default: Off) — Print debug messages to the chat window
+[*][B]Filter Food & Drink[/B] (default: On) — Also junk non-crafted, sellable food and drink
+[*][B]Filter Poisons[/B] (default: On) — Also junk non-crafted, sellable poisons
+[*][B]Filter Merchant Items[/B] (default: On) — Also junk non-crafted, sellable merchant trash items
+[*][B]Optional stolen item junking[/B] (default: off)  — When enabled, stolen items can be marked as junk; disable to always keep stolen items out of junk.
+[*][B]Auto Sell Trash Items[/B] (default: Off) — Automatically sell junk items when opening a merchant store
+[/LIST]
+
+[SIZE=4][B]How It Works[/B][/SIZE]
+
+[LIST=1]
+[*]When the inventory scene opens, the addon iterates through every slot in [FONT=Courier New]BAG_BACKPACK[/FONT].
+[*]Each item is checked against enabled filters:
+[LIST]
+[*][B]Potions[/B] are always considered.
+[*][B]Food & Drink[/B] are considered when the setting is enabled.
+[*][B]Poisons[/B] are considered when the setting is enabled.
+[*][B]Merchant Items[/B] are considered when the setting is enabled.
+[/LIST]
+[*]Matching items are marked junk only if they are [B]non-crafted and sellable[/B].
+[*]If [B]Auto Sell Trash Items[/B] is enabled, opening a merchant store will sell all junk automatically.
+[/LIST]
