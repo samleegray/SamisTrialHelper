@@ -25,9 +25,17 @@ function STH.InitializeSettings()
       type = "checkbox",
       name = "Enable Debug",
       tooltip = "Toggle debug messages.",
-      getFunc = function() return STH.savedVariables.enableDebug end,
-      setFunc = function(value) STH.savedVariables.enableDebug = value end,
+      getFunc = function() return STH.settings.enableDebug end,
+      setFunc = function(value) STH.settings.enableDebug = value end,
       default = false,
+    },
+    {
+      type = "checkbox",
+      name = "Clear On Zone Change",
+      tooltip = "Automatically clear tracked uncollected items when you change zones.",
+      getFunc = function() return STH.settings.clearOnZoneChange end,
+      setFunc = function(value) STH.settings.clearOnZoneChange = value end,
+      default = true,
     },
   }
 

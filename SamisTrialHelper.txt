@@ -1,6 +1,6 @@
 ## Title: SamisTrialHelper
 ## Version: 1.0.0
-## APIVersion: 101049
+## APIVersion: 101049 101050
 ## AddOnVersion: 1
 ## Author: |cf939dasamihaize|r
 ## Description: Helper for trials.
@@ -8,8 +8,11 @@
 ## SavedVariables: SamisTrialHelperSavedVariables
 ## DependsOn: LibAddonMenu-2.0>=41
 
+
+SamisTrialHelper.xml
 STH_Core.lua
 STH_Utils.lua
 SamiDebug.lua
+STH_UI.lua
 STH_Settings.lua
 SamisTrialHelper.lua
