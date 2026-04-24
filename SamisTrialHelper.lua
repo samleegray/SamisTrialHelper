@@ -1,5 +1,5 @@
 local STH = SamisTrialHelperAddon
-local SAMID = SamisAddonsDebugHelpers
+local SAMID = SamisTrialAddonsDebugHelpers
 
 local function itemsNotCollected(message, fromDisplayName)
   local links = {}
@@ -33,7 +33,21 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
   local uncollectedItemRecord = STH:CreateUncollectedItemRecord(fromDisplayName, fromName, uncollectedItems)
 
   if #uncollectedItems > 0 then
-    table.insert(STH.uncollectedItems, uncollectedItemRecord)
+    local existingRecord = STH.uncollectedItems[uncollectedItemRecord.playerName]
+    if existingRecord then
+      SAMID:Print("Updating existing record for player %s with %d uncollected items.", uncollectedItemRecord.playerName,
+        #uncollectedItems)
+      for _, itemLink in ipairs(uncollectedItems) do
+        table.insert(existingRecord.itemLinks, itemLink)
+      end
+
+      STH.ui.show()
+      STH.ui.createPlayerButton(existingRecord)
+      return
+    end
+
+    STH.uncollectedItems[uncollectedItemRecord.playerName] = uncollectedItemRecord
+    -- table.insert(STH.uncollectedItems, uncollectedItemRecord)
 
     SAMID:Print("Found %d uncollected item(s) in the message from %s.", #uncollectedItems,
       uncollectedItemRecord.playerName)
@@ -70,6 +84,8 @@ local function initialize()
 
   STH.InitializeSettings()
   STH.ui.init()
+
+  STH.ui.hide()
 end
 
 local function onAddOnLoaded(_, addonName)

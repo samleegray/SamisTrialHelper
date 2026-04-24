@@ -6,15 +6,10 @@ local ui = STH.ui
 local util = STH.util
 
 ui.playerButtons = {}
+ui.activePlayerButtons = {}
+ui.playerButtonCount = 0
 
 function ui.init()
-  if not ui.mainFragment then
-    ui.mainFragment = ZO_SimpleSceneFragment:New(SamisTrialHelperTLC)
-  end
-
-  HUD_SCENE:AddFragment(ui.mainFragment)
-  HUD_UI_SCENE:AddFragment(ui.mainFragment)
-
   SamisTrialHelperTLC:ClearAnchors()
   SamisTrialHelperTLC:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, STH.settings.offsetX,
     STH.settings.offsetY)
@@ -56,62 +51,91 @@ function ui.init()
 end
 
 function ui.hide()
-  if ui.mainFragment then
-    ui.mainFragment:Hide()
-  end
+  SamisTrialHelperTLC:SetHidden(true)
 end
 
 function ui.show()
-  if ui.mainFragment then
-    ui.mainFragment:Show()
+  SamisTrialHelperTLC:SetHidden(false)
+end
+
+function ui.createPlayerButtons(allDetails)
+  ui.clearPlayerButtons()
+
+  for index, details in ipairs(allDetails) do
+    ui.createPlayerButton(details, index)
   end
 end
 
-function ui.createPlayerButton(playerDetails)
-  if ui.playerButtons[playerDetails.playerName] then
-    local row = ui.playerButtons[playerDetails.playerName]
-    row.label:SetText(playerDetails.playerName .. " has #" .. #playerDetails.itemLinks .. " items you need")
-    return
+function ui.createPlayerButton(playerDetails, rowIndex)
+  rowIndex = rowIndex or 1
+
+  local row = ui.activePlayerButtons[playerDetails.playerName]
+  if not row then
+    row = table.remove(ui.playerButtons)
   end
 
-  local row = WINDOW_MANAGER:CreateControl("SamisTrialHelperTLC" .. playerDetails.playerName, SamisTrialHelperTLC,
-    CT_CONTROL)
-  row:SetHeight(30)
-  row:SetAnchor(TOPLEFT, SamisTrialHelperTLC, TOPLEFT, 8, 20 + 30 * #ui.playerButtons)
-  row:SetMouseEnabled(true)
+  if not row then
+    ui.playerButtonCount = ui.playerButtonCount + 1
+    local controlName = "SamisTrialHelperTLCRow" .. tostring(ui.playerButtonCount)
+    row = WINDOW_MANAGER:CreateControl(controlName, SamisTrialHelperTLC, CT_CONTROL)
+    row:SetHeight(30)
+    row:SetMouseEnabled(true)
 
-  row.label = WINDOW_MANAGER:CreateControl(nil, row, CT_LABEL)
-  row.label:SetAnchor(LEFT, row, LEFT, 0, 0)
+    row.label = WINDOW_MANAGER:CreateControl(nil, row, CT_LABEL)
+    row.label:SetAnchor(LEFT, row, LEFT, 0, 0)
+    row.label:SetFont("ZoFontWinH5")
+
+    row:SetHandler("OnMouseUp", function(self, button)
+      if button ~= MOUSE_BUTTON_INDEX_LEFT then return end
+      if not self.playerDetails then return end
+
+      local details = self.playerDetails
+
+      STH:SendGroupMessage(details)
+      ui.removePlayerButton(details.playerName)
+      STH:RemoveUncollectedItemRecord(details)
+    end)
+  end
+
+  row.playerDetails = playerDetails
   row.label:SetText(playerDetails.playerName .. " has #" .. #playerDetails.itemLinks .. " items you need")
-  row.label:SetFont("ZoFontWinH5")
-
   row:SetWidth(row.label:GetTextWidth() + 20)
+  row:ClearAnchors()
+  row:SetAnchor(TOPLEFT, SamisTrialHelperTLC, TOPLEFT, 8, 20 + 30 * (rowIndex - 1))
+  row:SetHidden(false)
 
-  row:SetHandler("OnMouseUp", function(self, button)
-    if button ~= MOUSE_BUTTON_INDEX_LEFT then return end
-
-    STH:SendGroupMessage(playerDetails)
-  end)
-
-  ui.playerButtons[playerDetails.playerName] = row
+  ui.activePlayerButtons[playerDetails.playerName] = row
 end
 
 function ui.removePlayerButton(playerName)
-  local row = ui.playerButtons[playerName]
+  local row = ui.activePlayerButtons[playerName]
   if row then
     row:SetHidden(true)
     row:ClearAnchors()
-    row:Destroy()
-    ui.playerButtons[playerName] = nil
+    row.playerDetails = nil
+    ui.activePlayerButtons[playerName] = nil
+    table.insert(ui.playerButtons, row)
+
+    if next(ui.activePlayerButtons) == nil then
+      ui.hide()
+    end
   end
 end
 
 function ui.clearPlayerButtons()
-  for playerName, row in pairs(ui.playerButtons) do
+  local hadActiveRows = next(ui.activePlayerButtons) ~= nil
+
+  for playerName, row in pairs(ui.activePlayerButtons) do
     row:SetHidden(true)
     row:ClearAnchors()
-    row:Destroy()
-    ui.playerButtons[playerName] = nil
+    row.playerDetails = nil
+    table.insert(ui.playerButtons, row)
+  end
+
+  ui.activePlayerButtons = {}
+
+  if hadActiveRows then
+    ui.hide()
   end
 end
 

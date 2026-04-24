@@ -1,6 +1,6 @@
-SamisAddonsDebugHelpers = SamisAddonsDebugHelpers or {}
+SamisTrialAddonsDebugHelpers = SamisTrialAddonsDebugHelpers or {}
 
-local SAMID = SamisAddonsDebugHelpers
+local SAMID = SamisTrialAddonsDebugHelpers
 local STH = SamisTrialHelperAddon
 
 function SAMID:Print(...)
