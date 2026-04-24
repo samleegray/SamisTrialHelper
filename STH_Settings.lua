@@ -37,6 +37,22 @@ function STH.InitializeSettings()
       setFunc = function(value) STH.settings.clearOnZoneChange = value end,
       default = true,
     },
+    {
+      type = "checkbox",
+      name = "Listen to Say Channel",
+      tooltip = "Listen for item links in the say channel.",
+      getFunc = function() return STH.settings.listenToSayChannel end,
+      setFunc = function(value) STH.settings.listenToSayChannel = value end,
+      default = false,
+    },
+    {
+      type = "checkbox",
+      name = "Listen to Group Channel",
+      tooltip = "Listen for item links in the group channel.",
+      getFunc = function() return STH.settings.listenToGroupChannel end,
+      setFunc = function(value) STH.settings.listenToGroupChannel = value end,
+      default = true,
+    },
   }
 
   LAM2:RegisterOptionControls(STH.name .. "Options", optionsData)

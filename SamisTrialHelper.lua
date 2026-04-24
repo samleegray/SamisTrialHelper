@@ -27,6 +27,12 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
   --   return
   -- end
 
+  if (channelType == CHAT_CHANNEL_SAY and not STH.settings.listenToSayChannel) or
+      (channelType == CHAT_CHANNEL_PARTY and not STH.settings.listenToGroupChannel) then
+    return
+  end
+
+
   SAMID:Print("Chat Message - Channel: %s, From: %s, Message: %s", channelType, fromName, messageText)
 
   local uncollectedItems = itemsNotCollected(messageText, fromDisplayName)

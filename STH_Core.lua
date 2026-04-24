@@ -26,6 +26,8 @@ STH.defaults = {
   backgroundColor = "000000",
   backgroundOpacity = 0.8,
   showTitle = true,
+  listenToSayChannel = false,
+  listenToGroupChannel = true,
 }
 
 STH.uncollectedItems = {}
