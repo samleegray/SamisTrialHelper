@@ -28,6 +28,7 @@ STH.defaults = {
   showTitle = true,
   listenToSayChannel = false,
   listenToGroupChannel = true,
+  whisperPlayer = false,
 }
 
 STH.uncollectedItems = {}
@@ -37,12 +38,13 @@ STH.lastRequestRecord = nil
 function STH:RemoveUncollectedItemRecord(record)
   if not record then return end
 
-  for index, existingRecord in ipairs(STH.uncollectedItems) do
-    if existingRecord == record or existingRecord.playerName == record.playerName then
-      table.remove(STH.uncollectedItems, index)
-      return
-    end
-  end
+  STH.uncollectedItems[record.playerName] = nil
+  -- for index, existingRecord in ipairs(STH.uncollectedItems) do
+  --   if existingRecord == record or existingRecord.playerName == record.playerName then
+  --     table.remove(STH.uncollectedItems, index)
+  --     return
+  --   end
+  -- end
 end
 
 function STH:CreateUncollectedItemRecord(fromDisplayName, fromName, itemLinks)
@@ -64,6 +66,17 @@ function STH:SendGroupMessage(record)
 
     STH.lastMessage = formattedMessage
     STH.lastRequestRecord = record
-    CHAT_SYSTEM:StartTextEntry(string.format("/g %s", formattedMessage), CHAT_CHANNEL_PARTY)
+
+    local prefix = nil
+    local chatChannel = nil
+    if STH.settings.whisperPlayer then
+      prefix = string.format("/w %s ", fromDisplayName)
+      chatChannel = CHAT_CHANNEL_WHISPER
+    else
+      prefix = "/g "
+      chatChannel = CHAT_CHANNEL_PARTY
+    end
+
+    CHAT_SYSTEM:StartTextEntry(string.format("%s%s", prefix, formattedMessage), chatChannel)
   end
 end

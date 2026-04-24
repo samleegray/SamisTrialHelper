@@ -53,6 +53,14 @@ function STH.InitializeSettings()
       setFunc = function(value) STH.settings.listenToGroupChannel = value end,
       default = true,
     },
+    {
+      type = "checkbox",
+      name = "Whisper Player",
+      tooltip = "When enabled, whisper the player directly. When disabled, post in group chat.",
+      getFunc = function() return STH.settings.whisperPlayer end,
+      setFunc = function(value) STH.settings.whisperPlayer = value end,
+      default = false,
+    },
   }
 
   LAM2:RegisterOptionControls(STH.name .. "Options", optionsData)

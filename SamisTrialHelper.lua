@@ -1,5 +1,10 @@
 local STH = SamisTrialHelperAddon
 local SAMID = SamisTrialAddonsDebugHelpers
+local LILD = LibItemLinkDecoder
+
+local function replaceCharAt(str, pos, char)
+  return str:sub(1, pos - 1) .. char .. str:sub(pos + 1)
+end
 
 local function itemsNotCollected(message, fromDisplayName)
   local links = {}
@@ -9,7 +14,12 @@ local function itemsNotCollected(message, fromDisplayName)
 
   for _, originalItemLink in ipairs(links) do
     if IsItemLinkSetCollectionPiece(originalItemLink.link) and not IsItemSetCollectionPieceUnlocked(GetItemLinkItemId(originalItemLink.link)) then
-      table.insert(uncollected, originalItemLink.link)
+      -- local decodedItemLink = LILD:DecodeItemLink(originalItemLink.link)
+      -- decodedItemLink:SetValue("linkStyle", LINK_STYLE_BRACKETS)
+
+      local brackedLink = replaceCharAt(originalItemLink.link, 3, "1")
+
+      table.insert(uncollected, brackedLink)
     end
   end
 
@@ -27,11 +37,11 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
   --   return
   -- end
 
-  if (channelType == CHAT_CHANNEL_SAY and not STH.settings.listenToSayChannel) or
+  if (channelType ~= CHAT_CHANNEL_SAY and channelType ~= CHAT_CHANNEL_PARTY) or
+      (channelType == CHAT_CHANNEL_SAY and not STH.settings.listenToSayChannel) or
       (channelType == CHAT_CHANNEL_PARTY and not STH.settings.listenToGroupChannel) then
     return
   end
-
 
   SAMID:Print("Chat Message - Channel: %s, From: %s, Message: %s", channelType, fromName, messageText)
 
@@ -53,7 +63,6 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
     end
 
     STH.uncollectedItems[uncollectedItemRecord.playerName] = uncollectedItemRecord
-    -- table.insert(STH.uncollectedItems, uncollectedItemRecord)
 
     SAMID:Print("Found %d uncollected item(s) in the message from %s.", #uncollectedItems,
       uncollectedItemRecord.playerName)
