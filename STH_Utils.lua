@@ -4,6 +4,14 @@ STH.util = STH.util or {}
 
 local util = STH.util
 
+function util.replaceCharAt(str, pos, char)
+  return str:sub(1, pos - 1) .. char .. str:sub(pos + 1)
+end
+
+function util.makeBracketLink(itemLink)
+  return util.replaceCharAt(itemLink, 3, "1")
+end
+
 function util.colorText(text, hex)
   return "|c" .. hex .. text .. "|r"
 end

@@ -39,12 +39,6 @@ function STH:RemoveUncollectedItemRecord(record)
   if not record then return end
 
   STH.uncollectedItems[record.playerName] = nil
-  -- for index, existingRecord in ipairs(STH.uncollectedItems) do
-  --   if existingRecord == record or existingRecord.playerName == record.playerName then
-  --     table.remove(STH.uncollectedItems, index)
-  --     return
-  --   end
-  -- end
 end
 
 function STH:CreateUncollectedItemRecord(fromDisplayName, fromName, itemLinks)

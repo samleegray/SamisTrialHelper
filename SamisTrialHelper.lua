@@ -1,12 +1,7 @@
 local STH = SamisTrialHelperAddon
 local SAMID = SamisTrialAddonsDebugHelpers
-local LILD = LibItemLinkDecoder
 
-local function replaceCharAt(str, pos, char)
-  return str:sub(1, pos - 1) .. char .. str:sub(pos + 1)
-end
-
-local function itemsNotCollected(message, fromDisplayName)
+local function itemsNotCollected(message)
   local links = {}
   ZO_ExtractLinksFromText(message, { [ITEM_LINK_TYPE] = true }, links)
 
@@ -14,10 +9,7 @@ local function itemsNotCollected(message, fromDisplayName)
 
   for _, originalItemLink in ipairs(links) do
     if IsItemLinkSetCollectionPiece(originalItemLink.link) and not IsItemSetCollectionPieceUnlocked(GetItemLinkItemId(originalItemLink.link)) then
-      -- local decodedItemLink = LILD:DecodeItemLink(originalItemLink.link)
-      -- decodedItemLink:SetValue("linkStyle", LINK_STYLE_BRACKETS)
-
-      local brackedLink = replaceCharAt(originalItemLink.link, 3, "1")
+      local brackedLink = STH.util.makeBracketLink(originalItemLink.link)
 
       table.insert(uncollected, brackedLink)
     end
@@ -27,16 +19,6 @@ local function itemsNotCollected(message, fromDisplayName)
 end
 
 local function handleChatMessage(event, channelType, fromName, messageText, isCustomerService, fromDisplayName)
-  -- if channelType ~= CHAT_CHANNEL_PARTY then return end
-
-  -- if fromName == GetUnitName("player") and STH.lastMessage == messageText then
-  --   STH.lastRequestRecord.requested = true
-  --   STH.lastMessage = nil
-  --   STH.lastRequestRecord = nil
-
-  --   return
-  -- end
-
   if (channelType ~= CHAT_CHANNEL_SAY and channelType ~= CHAT_CHANNEL_PARTY) or
       (channelType == CHAT_CHANNEL_SAY and not STH.settings.listenToSayChannel) or
       (channelType == CHAT_CHANNEL_PARTY and not STH.settings.listenToGroupChannel) then
@@ -45,7 +27,7 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
 
   SAMID:Print("Chat Message - Channel: %s, From: %s, Message: %s", channelType, fromName, messageText)
 
-  local uncollectedItems = itemsNotCollected(messageText, fromDisplayName)
+  local uncollectedItems = itemsNotCollected(messageText)
   local uncollectedItemRecord = STH:CreateUncollectedItemRecord(fromDisplayName, fromName, uncollectedItems)
 
   if #uncollectedItems > 0 then
