@@ -52,10 +52,16 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
       SAMID:Print("Uncollected Item Link: %s", itemLink)
     end
 
-    STH.ui.show()
-    STH.ui.createPlayerButton(uncollectedItemRecord)
+    -- STH.ui.createPlayerButton(uncollectedItemRecord)
   else
     SAMID:Print("No uncollected items found in the message.")
+  end
+
+  if #STH.uncollectedItems > 0 then
+    STH.ui.createPlayerButtons(STH.uncollectedItems)
+    STH.ui.show()
+  else
+    STH.ui.hide()
   end
 end
 

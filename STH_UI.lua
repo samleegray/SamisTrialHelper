@@ -4,6 +4,7 @@ STH.ui = STH.ui or {}
 
 local ui = STH.ui
 local util = STH.util
+local SAMID = SamisTrialAddonsDebugHelpers
 
 ui.playerButtons = {}
 ui.activePlayerButtons = {}
@@ -61,14 +62,21 @@ end
 function ui.createPlayerButtons(allDetails)
   ui.clearPlayerButtons()
 
-  for index, details in ipairs(allDetails) do
-    ui.createPlayerButton(details, index)
+  SAMID:Print("Creating player buttons for %d player(s).", #allDetails)
+
+  if #allDetails > 0 then
+    local index = 1
+    for _, details in pairs(allDetails) do
+      ui.createPlayerButton(details, index)
+      index = index + 1
+    end
+
+    SAMID:Print("Created %d player button(s).", #allDetails)
+    ui.show()
   end
 end
 
 function ui.createPlayerButton(playerDetails, rowIndex)
-  rowIndex = rowIndex or 1
-
   local row = ui.activePlayerButtons[playerDetails.playerName]
   if not row then
     row = table.remove(ui.playerButtons)
