@@ -21,7 +21,7 @@ end
 local function handleChatMessage(event, channelType, fromName, messageText, isCustomerService, fromDisplayName)
   if (channelType ~= CHAT_CHANNEL_SAY and channelType ~= CHAT_CHANNEL_PARTY) or
       (channelType == CHAT_CHANNEL_SAY and not STH.settings.listenToSayChannel) or
-      (channelType == CHAT_CHANNEL_PARTY and not STH.settings.listenToGroupChannel) then
+      (channelType == CHAT_CHANNEL_PARTY and not STH.settings.listenToGroupChannel) or GetDisplayName() == fromDisplayName then
     return
   end
 
@@ -57,12 +57,7 @@ local function handleChatMessage(event, channelType, fromName, messageText, isCu
     SAMID:Print("No uncollected items found in the message.")
   end
 
-  if #STH.uncollectedItems > 0 then
-    STH.ui.createPlayerButtons(STH.uncollectedItems)
-    STH.ui.show()
-  else
-    STH.ui.hide()
-  end
+  STH.ui.createPlayerButtons(STH.uncollectedItems)
 end
 
 local function reset()

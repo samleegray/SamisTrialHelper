@@ -62,16 +62,17 @@ end
 function ui.createPlayerButtons(allDetails)
   ui.clearPlayerButtons()
 
-  SAMID:Print("Creating player buttons for %d player(s).", #allDetails)
+  SAMID:Print("Creating player buttons for player(s).")
 
-  if #allDetails > 0 then
-    local index = 1
-    for _, details in pairs(allDetails) do
-      ui.createPlayerButton(details, index)
-      index = index + 1
-    end
+  local index = nil
+  for _, details in pairs(allDetails) do
+    index = index or 1
+    ui.createPlayerButton(details, index)
+    index = index + 1
+  end
 
-    SAMID:Print("Created %d player button(s).", #allDetails)
+  if index then
+    SAMID:Print("Created player button(s). %d", index)
     ui.show()
   end
 end
